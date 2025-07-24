@@ -10,6 +10,15 @@ yarn-error.log*
 
 # Environment variables
 library-backend/.env
+# Environment variable files
+.env
+.env.*
+*.env
+*.env.*
+.env.local
+.env.development
+.env.production
+.env.test
 
 # Build output
 dist/
