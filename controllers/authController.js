@@ -1,6 +1,7 @@
 import ErrorHandler from "../middlewares/errorMiddleware";
 import {User} from "../models/userModel.js";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
+import { sendVerificationCode } from "../utils/sendEmail.js";
 import bcrypt from "bcryptjs";
 
 
@@ -25,10 +26,11 @@ const registerUser = catchAsyncErrors(async (req, res, next) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({ name, email, password: hashedPassword });
-        res.status(201).json({
-            success: true,
-            user
-        });
+        const verificationCode = await user.getVerificationCode();
+        await user.save();
+        sendVerificationCode(verificationCode,email,res);
+
+        
     } catch (error) {
         return next(new ErrorHandler("Error registering user", 500));
     }

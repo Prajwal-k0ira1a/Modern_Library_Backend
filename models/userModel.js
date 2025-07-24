@@ -27,5 +27,16 @@ resetPasswordExpire: Date,
     timestamps: true,
 }
 );
+userSchema.methods.getVerificationCode =function () {
+    function generateRandomNumber() {
+        const firstDigit = Math.floor(Math.random() * 9) + 1;
+        const remainingDigits=Math.floor(Math.random()*10000).toString().padStart(4,0); // Ensure first digit is not zero
+return parseInt(firstDigit.toString() + remainingDigits);
+    }
+    const verificationCode = generateRandomNumber();
+    this.verificationCode = verificationCode;
+    this.verificationCodeExpire = Date.now() + 10 * 60 * 1000; // Code valid for 10 minutes
+    return verificationCode;
+};
 const User = mongoose.model("User", userSchema);
 export default User;
